@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import HeroSection from '../components/HeroSection.astro';
+import RoadSection from '../components/RoadSection.astro';
+import CTASection from '../components/CTASection.astro';
+import Footer from '../components/Footer.astro';
+
+import { getImage } from "astro:assets"
+import cover from "../assets/cover.png"
+const optimizedBackgroundImage = await getImage({ src: cover })
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Cristiano Ronaldo road to 1000 goals</title>
+
+		<!-- Google tag (gtag.js) -->
+			<script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
+			<script type="text/partytown">
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+
+				gtag('config', 'G-K6DCEHCT55');
+			</script>
+	</head>
+	<body class="bg-black bg-blend-overlay">
+		<div class="h-screen flex flex-col justify-center items-center animate-fade-in
+			bg-cover bg-[calc(50%-50vw)] md:bg-center"
+			style={`background-image: url('${optimizedBackgroundImage.src}'); z-index: 0;`}>
+			<!-- Your content here -->
+			<Header />
+			<HeroSection />
+			<RoadSection />
+			<CTASection />
+			<Footer />
+		</div>
+		<div class="absolute inset-0 
+			bg-[radial-gradient(circle_at_left,rgba(255,255,255,0.2)_0%,rgba(0,0,0,1)_60%)] blur-[20px] -z-10
+			md:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,rgba(0,0,0,1)_60%)]">
+		</div>
+		<!-- Import the shrinkHeader script -->
+		<script src="../scripts/shrinkHeader.js"></script>
+	</body>
+</html>

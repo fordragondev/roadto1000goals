@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Gravitas+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans:'Gravitas One', sans-serif;
+  --font-roboto:'Roboto', sans-serif;
+  --color-oldgold-400: oklch(75.16% 0.1469 83.99);
+}
+
+@layer base {
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    @apply bg-black text-white;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-oldgold-400;
+    @apply font-roboto font-bold;
+  }
+
+  p {
+    @apply font-roboto font-normal;
+  }
+
+  a {
+    @apply text-oldgold-400 hover:text-yellow-700;
+  }
+
+  .stroke-text {
+   -webkit-text-stroke: 1px oklch(75.16% 0.1469 83.99); /* */
+    text-shadow: 1px 1px 0 #000; 
+  }
+}
+
+@layer utilities {
+  .webkit-scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .webkit-scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  .animate-fade-in {
+    animation: fade-in 1s ease-in-out;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
