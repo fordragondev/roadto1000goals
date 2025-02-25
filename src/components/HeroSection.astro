@@ -1,13 +1,21 @@
 ---
-const title = "924";
-const text = "Last update 15 february 2025";
-const longText = "List of Cristiano Ronaldo Goals.";
+const title = "925";
+const text = "Last goal february 25 - 2025";
+const longText = "Cristiano Ronaldo goals scored all time";
+
+const LongTailKeywords = {
+  one: "Ronaldo's goal scoring record",
+  two: "how many goals has Ronaldo scored in his career"
+};
+
 ---
 
-  <section class="flex-none justify-center items-center text-center p-4 mt-8
+  <section class="flex-none justify-center items-center text-center p-4 mt-4
                   md:w-full md:items-end md:justify-end md:text-right">
-    <h1 class="text-6xl md:text-9xl mb-4 [text-shadow:_2px_4px_8px_rgba(184,134,11,0.7)]" >{title}</h1>
-    <p class="text-sm md:text-xl">{text}</p>
-    <h3 class="text-sm pt-4 pb-0 stroke-text
+    <h1 class="text-xl text-black mb-1 " >{LongTailKeywords.one}</h1>
+    <h1 class="text-6xl md:text-9xl mb-4 [text-shadow:_2px_4px_8px_rgba(184,134,11,0.7)]"
+      aria-description={LongTailKeywords.two}>{title}</h1>
+    <p class="text-sm md:text-md">{text}</p>
+    <h3 class="text-sm pt-4 pb-0
               md:text-4xl md:w-1/3 md:ml-auto">{longText}</h3>
   </section>

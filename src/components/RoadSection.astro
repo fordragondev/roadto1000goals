@@ -1,5 +1,6 @@
 ---
 const data = [
+  "925 H	Al-Nassr FC vs.	Al-Wehda FC 48'	pending data",
   "924 H	Al-Nassr FC vs.	Al-Fayha FC 74'	Counter attack goal",
   "923 H	Al-Nassr FC vs.	Al-Wasl FC 78' Header",
   "922 H	Al-Nassr FC vs.	Al-Wasl FC 44' Penalty",
@@ -26,13 +27,18 @@ const data = [
 ];
 
 const middleIndex = Math.floor(data.length / 2);
+
+const LongTailKeywords = {
+  one: "Cristiano Ronaldo total goals today",
+  two: "Cristiano Ronaldo goals 2025"
+};
 ---
 <section class="flex-grow overflow-y-auto w-full p-2
                   flex flex-col justify-center items-center">
-                  
+  <h1 class="text-xl text-transparent mb-4 " >{LongTailKeywords.one}</h1>
   <div class="h-[20vh] md:w-full backdrop-invert backdrop-opacity-10
   overflow-y-auto overflow-hidden webkit-scrollbar-hide
-  flex flex-col items-center">
+  flex flex-col items-center" aria-description={LongTailKeywords.two}>
       {
         data.map((line,index) => (
           <p class={`max-w-2xl text-xs md:text-2xl py-2 ${index === 0 ? "opacity-100 font-semibold" : "opacity-75"}`}>
