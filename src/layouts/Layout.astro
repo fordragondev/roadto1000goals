@@ -12,7 +12,8 @@ import cover from "../assets/cover.png"
 
 const optimizedBackgroundImage = await getImage({ src: cover })
 const currentPage = {
-  title: "Cristiano Ronaldo Goal Tracker: Live Updates & Career Stats",
+  title: "Cristiano Ronaldo's Road to 1000 Goals",
+  text: "Goal Tracker: Live Updates.",
   description: "Track Cristiano Ronaldo's journey to 1000 career goals! Get live updates on his current goal count, detailed stats by club and competition, and more!",
 };
 
@@ -23,7 +24,7 @@ const currentPage = {
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{currentPage.title} | Road to 1000 Goals</title>
+		<title>{currentPage.title} | {currentPage.text}</title>
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={currentPage.description}/>
 		<!-- Schema Markup -->
@@ -32,7 +33,7 @@ const currentPage = {
 				// Your JSON-LD schema markup goes here
 			  	"@context": "https://schema.org",
 				"@type": "WebPage",
-				"name": "Cristiano Ronaldo Goal Tracker: Live Updates & Career Stats",
+				"name": "Cristiano Ronaldo's Road to 1000 Goals",
 				"description": "Track Cristiano Ronaldo's journey to 1000 career goals! Get live updates on his current goal count, detailed stats by club and competition, and more.",
 				"url": "https://www.roadto1000goals.com/",
 				"mainEntity": {
