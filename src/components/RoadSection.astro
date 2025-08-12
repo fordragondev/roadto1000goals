@@ -1,9 +1,11 @@
---- 
+---
 const data = [
-  "N.O 8/07/25   Al-Nassr FC vs. Rio Ave 68' Penalty",
-  "N.O 8/07/25   Al-Nassr FC vs. Rio Ave 63' Header",
-  "N.O 8/07/25   Al-Nassr FC vs. Rio Ave 44' Right-footed shot",
-  "N.O 7/30/25   Al-Nassr FC vs. Toulouse 33' Right-footed shot",
+  "N.O 8/11/25 N Al-Nassr FC vs. Almería 39' Penalty",
+  "N.O 8/11/25 N Al-Nassr FC vs. Almería 17'  Right-footed shot",
+  "N.O 8/07/25 N Al-Nassr FC vs. Rio Ave 68' Penalty",
+  "N.O 8/07/25 N Al-Nassr FC vs. Rio Ave 63' Header",
+  "N.O 8/07/25 N Al-Nassr FC vs. Rio Ave 44' Right-footed shot",
+  "N.O 7/30/25 N Al-Nassr FC vs. Toulouse 33' Right-footed shot",
   "938 6/08/25 N Portugal FC vs. Spain 61' Right-footed shot",
   "937 6/04/25 N Portugal FC vs. Germany 68' Right-footed shot",
   "936 5/26/25 A Al-Nassr FC vs. Al-Fateh SC 42' Header",
@@ -14,7 +16,7 @@ const data = [
   "931 4/04/25 A Al-Nassr FC vs. Al-Hilal SFC 88' Penalty",
   "930 4/04/25 A Al-Nassr FC vs. Al-Hilal SFC 47' Left-footed shot",
   "929 3/23/25 H Portugal vs. Denmark 72' Right-footed shot",
-  "928 3/14/25 H Al-Nassr FC vs. Al-Kholood Club 4' Right-footed shot",  
+  "928 3/14/25 H Al-Nassr FC vs. Al-Kholood Club 4' Right-footed shot",
   "927 3/10/25 H Al-Nassr FC vs. Esteghlal FC 27' Penalty",
   "926 3/7/25 H Al-Nassr FC vs. Al-Shabab FC 45'+7 Right-footed shot",
   "925 2/25/25 A Al-Nassr FC vs. Al-Wehda FC 48' Header",
@@ -42,7 +44,7 @@ const data = [
   "903 9/27/24 H Al-Nassr FC vs. Al-Wehda FC 56' Penalty",
   "902 9/20/24 A Al-Nassr FC vs. Al-Ettifaq FC 33' Penalty",
   "901 8/27/24 A Al-Nassr FC vs. Al-Fayha FC 45'+10 Direct free kick",
-  "900 8/22/24 H Al-Nassr FC vs. Al-Raed SFC 34' Header"
+  "900 8/22/24 H Al-Nassr FC vs. Al-Raed SFC 34' Header",
 ];
 
 //926 goal update
@@ -50,22 +52,29 @@ const middleIndex = Math.floor(data.length / 2);
 
 const LongTailKeywords = {
   one: "Cristiano Ronaldo total goals today",
-  two: "Cristiano Ronaldo goals 2025"
+  two: "Cristiano Ronaldo goals 2025",
 };
 ---
-<section class="flex-grow overflow-y-auto w-full p-2
-                  flex flex-col justify-center items-center">
-  <h1 class="text-xl text-transparent mb-4 " >{LongTailKeywords.one}</h1>
-  <div class="h-[20vh] md:w-full backdrop-invert backdrop-opacity-10
+
+<section
+  class="flex-grow overflow-y-auto w-full p-2
+                  flex flex-col justify-center items-center"
+>
+  <h1 class="text-xl text-transparent mb-4">{LongTailKeywords.one}</h1>
+  <div
+    class="h-[20vh] md:w-full backdrop-invert backdrop-opacity-10
   overflow-y-auto overflow-hidden webkit-scrollbar-hide
-  flex flex-col items-center" aria-description={LongTailKeywords.two}>
-      {
-        data.map((line,index) => (
-          <p class={`max-w-2xl text-xs md:text-2xl py-2 ${index === 0 ? "opacity-100 font-semibold" : "opacity-75"}`}>
-            {line}
-            </p>
-        ))
-      }
-      
+  flex flex-col items-center"
+    aria-description={LongTailKeywords.two}
+  >
+    {
+      data.map((line, index) => (
+        <p
+          class={`max-w-2xl text-xs md:text-2xl py-2 ${index === 0 ? "opacity-100 font-semibold" : "opacity-75"}`}
+        >
+          {line}
+        </p>
+      ))
+    }
   </div>
 </section>
