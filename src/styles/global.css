@@ -38,10 +38,10 @@
 }
 
 @layer utilities {
-  .webkit-scrollbar-hide::-webkit-scrollbar {
+  .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
-  .webkit-scrollbar-hide {
+  .scrollbar-none {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
   }

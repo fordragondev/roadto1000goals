@@ -1,36 +1,77 @@
 ---
-const data = [
-  "941 06/09/25 Portugal vs. Armenia 21' Right-footed shot",
+// Parse goal data into structured objects
+const parseGoalData = (goalString) => {
+  const parts = goalString.split(' ');
+  const goalNumber = parts[0];
+  const date = parts[1];
+  const venue = parts[2] === 'H' ? 'Home' : parts[2] === 'A' ? 'Away' : 'Neutral';
+  
+  // Find the time marker (contains apostrophe)
+  const timeIndex = parts.findIndex(part => part.includes("'"));
+  const time = timeIndex !== -1 ? parts[timeIndex] : '';
+  
+  // Extract match info (between venue and time)
+  const matchInfo = parts.slice(3, timeIndex).join(' ');
+  
+  // Extract goal type (after time)
+  const goalType = parts.slice(timeIndex + 1).join(' ');
+  
+  // Determine if it's official or not
+  const isOfficial = goalNumber !== 'N.O';
+  
+  // Format date for mobile (shorter version)
+  const formatMobileDate = (dateStr) => {
+    // Convert MM/DD/YY to M/D
+    const [month, day, year] = dateStr.split('/');
+    return `${parseInt(month)}/${parseInt(day)}`;
+  };
+  
+  return {
+    number: goalNumber,
+    date,
+    mobileDate: formatMobileDate(date),
+    venue,
+    matchInfo,
+    time,
+    goalType,
+    isOfficial,
+    raw: goalString
+  };
+};
+
+const rawData = [
+  "942 06/09/25 A Portugal vs. Armenia 58' Right-footed shot",
+  "941 06/09/25 A Portugal vs. Armenia 21' Right-footed shot",
   "940 29/08/25 H Al-Nassr FC vs. Al-Taawoun 54' Penalty",
   "939 23/08/25 H Al-Nassr FC vs. Al-Ahli 41' Penalty",
-  "N.O 8/11/25 N Al-Nassr FC vs. Almería 39' Penalty",
-  "N.O 8/11/25 N Al-Nassr FC vs. Almería 17' Right-footed shot",
-  "N.O 8/07/25 N Al-Nassr FC vs. Rio Ave 68' Penalty",
-  "N.O 8/07/25 N Al-Nassr FC vs. Rio Ave 63' Header",
-  "N.O 8/07/25 N Al-Nassr FC vs. Rio Ave 44' Right-footed shot",
-  "N.O 7/30/25 N Al-Nassr FC vs. Toulouse 33' Right-footed shot",
-  "938 6/08/25 N Portugal vs. Spain 61' Right-footed shot",
-  "937 6/04/25 N Portugal vs. Germany 68' Right-footed shot",
-  "936 5/26/25 A Al-Nassr FC vs. Al-Fateh SC 42' Header",
-  "935 5/21/25 H Al-Nassr FC vs. Al-Khaleej FC 90+7' Penalty",
-  "934 4/26/25 A Al-Nassr FC vs. Yokohama F.M. 38' Right-footed shot",
-  "933 4/12/25 H Al-Nassr FC vs. Al-Riyadh SC 64' Right-footed shot",
-  "932 4/12/25 H Al-Nassr FC vs. Al-Riyadh SC 56' Right-footed shot",
-  "931 4/04/25 A Al-Nassr FC vs. Al-Hilal SFC 88' Penalty",
-  "930 4/04/25 A Al-Nassr FC vs. Al-Hilal SFC 47' Left-footed shot",
-  "929 3/23/25 H Portugal vs. Denmark 72' Right-footed shot",
-  "928 3/14/25 H Al-Nassr FC vs. Al-Kholood Club 4' Right-footed shot",
-  "927 3/10/25 H Al-Nassr FC vs. Esteghlal FC 27' Penalty",
-  "926 3/7/25 H Al-Nassr FC vs. Al-Shabab FC 45'+7 Right-footed shot",
-  "925 2/25/25 A Al-Nassr FC vs. Al-Wehda FC 48' Header",
-  "924 2/07/25 H Al-Nassr FC vs. Al-Fayha FC 74' Counter attack goal",
-  "923 2/03/25 H Al-Nassr FC vs. Al-Wasl FC 78' Header",
-  "922 2/03/25 H Al-Nassr FC vs. Al-Wasl FC 44' Penalty",
-  "921 1/30/25 A Al-Nassr FC vs. Al-Raed SFC 35' Right-footed shot",
-  "920 1/26/25 H Al-Nassr FC vs. Al-Fateh SC 87' Right-footed shot",
-  "919 1/21/25 A Al-Nassr FC vs. Al-Khaleej FC 90'+8 Left-footed shot",
-  "918 1/21/25 A Al-Nassr FC vs. Al-Khaleej FC 65' Right-footed shot",
-  "917 1/09/25 H Al-Nassr FC vs. Al-Okhdood Club 42' Penalty",
+  "N.O 08/11/25 N Al-Nassr FC vs. Almería 39' Penalty",
+  "N.O 08/11/25 N Al-Nassr FC vs. Almería 17' Right-footed shot",
+  "N.O 08/07/25 N Al-Nassr FC vs. Rio Ave 68' Penalty",
+  "N.O 08/07/25 N Al-Nassr FC vs. Rio Ave 63' Header",
+  "N.O 08/07/25 N Al-Nassr FC vs. Rio Ave 44' Right-footed shot",
+  "N.O 07/30/25 N Al-Nassr FC vs. Toulouse 33' Right-footed shot",
+  "938 06/08/25 N Portugal vs. Spain 61' Right-footed shot",
+  "937 06/04/25 N Portugal vs. Germany 68' Right-footed shot",
+  "936 05/26/25 A Al-Nassr FC vs. Al-Fateh SC 42' Header",
+  "935 05/21/25 H Al-Nassr FC vs. Al-Khaleej FC 90+7' Penalty",
+  "934 04/26/25 A Al-Nassr FC vs. Yokohama F.M. 38' Right-footed shot",
+  "933 04/12/25 H Al-Nassr FC vs. Al-Riyadh SC 64' Right-footed shot",
+  "932 04/12/25 H Al-Nassr FC vs. Al-Riyadh SC 56' Right-footed shot",
+  "931 04/04/25 A Al-Nassr FC vs. Al-Hilal SFC 88' Penalty",
+  "930 04/04/25 A Al-Nassr FC vs. Al-Hilal SFC 47' Left-footed shot",
+  "929 03/23/25 H Portugal vs. Denmark 72' Right-footed shot",
+  "928 03/14/25 H Al-Nassr FC vs. Al-Kholood Club 4' Right-footed shot",
+  "927 03/10/25 H Al-Nassr FC vs. Esteghlal FC 27' Penalty",
+  "926 03/07/25 H Al-Nassr FC vs. Al-Shabab FC 45'+7 Right-footed shot",
+  "925 02/25/25 A Al-Nassr FC vs. Al-Wehda FC 48' Header",
+  "924 02/07/25 H Al-Nassr FC vs. Al-Fayha FC 74' Counter attack goal",
+  "923 02/03/25 H Al-Nassr FC vs. Al-Wasl FC 78' Header",
+  "922 02/03/25 H Al-Nassr FC vs. Al-Wasl FC 44' Penalty",
+  "921 01/30/25 A Al-Nassr FC vs. Al-Raed SFC 35' Right-footed shot",
+  "920 01/26/25 H Al-Nassr FC vs. Al-Fateh SC 87' Right-footed shot",
+  "919 01/21/25 A Al-Nassr FC vs. Al-Khaleej FC 90'+8 Left-footed shot",
+  "918 01/21/25 A Al-Nassr FC vs. Al-Khaleej FC 65' Right-footed shot",
+  "917 01/09/25 H Al-Nassr FC vs. Al-Okhdood Club 42' Penalty",
   "916 12/06/24 A Al-Nassr FC vs. Al-Ittihad Club 57' Right-footed shot",
   "915 11/29/24 H Al-Nassr FC vs. Damac FC 79' Left-footed shot",
   "914 11/29/24 H Al-Nassr FC vs. Damac FC 17' Penalty",
@@ -42,16 +83,26 @@ const data = [
   "908 11/05/24 H Al-Nassr FC vs. Al-Ain FC 31' Left-footed shot",
   "907 10/18/24 A Al-Nassr FC vs. Al-Shabab FC 90'+7 Penalty",
   "906 10/12/24 A Portugal vs. Poland 37' Right-footed Penalty",
-  "905 10/5/24 H Al-Nassr FC vs. Al-Orobah FC 17' Penalty",
-  "904 9/30/24 H Al-Nassr FC vs. Al-Rayyan SC 76' Left-footed shot",
-  "903 9/27/24 H Al-Nassr FC vs. Al-Wehda FC 56' Penalty",
-  "902 9/20/24 A Al-Nassr FC vs. Al-Ettifaq FC 33' Penalty",
-  "901 8/27/24 A Al-Nassr FC vs. Al-Fayha FC 45'+10 Direct free kick",
-  "900 8/22/24 H Al-Nassr FC vs. Al-Raed SFC 34' Header",
+  "905 10/05/24 H Al-Nassr FC vs. Al-Orobah FC 17' Penalty",
+  "904 09/30/24 H Al-Nassr FC vs. Al-Rayyan SC 76' Left-footed shot",
+  "903 09/27/24 H Al-Nassr FC vs. Al-Wehda FC 56' Penalty",
+  "902 09/20/24 A Al-Nassr FC vs. Al-Ettifaq FC 33' Penalty",
+  "901 08/27/24 A Al-Nassr FC vs. Al-Fayha FC 45'+10 Direct free kick",
+  "900 08/22/24 H Al-Nassr FC vs. Al-Raed SFC 34' Header",
 ];
 
-//926 goal update
-const middleIndex = Math.floor(data.length / 2);
+const data = rawData.map(parseGoalData);
+
+// Helper function to get goal type badge color
+const getGoalTypeBadge = (goalType) => {
+  if (goalType.includes('Penalty')) return { color: 'bg-red-500', text: 'PEN' };
+  if (goalType.includes('Header')) return { color: 'bg-blue-500', text: 'HEAD' };
+  if (goalType.includes('Direct free kick')) return { color: 'bg-green-500', text: 'FK' };
+  if (goalType.includes('Counter attack')) return { color: 'bg-purple-500', text: 'COUNT' };
+  if (goalType.includes('Right-footed')) return { color: 'bg-amber-500', text: 'R.F' };
+  if (goalType.includes('Left-footed')) return { color: 'bg-orange-500', text: 'L.F' };
+  return { color: 'bg-gray-500', text: 'GOAL' };
+};
 
 const LongTailKeywords = {
   one: "Cristiano Ronaldo total goals today",
@@ -65,19 +116,60 @@ const LongTailKeywords = {
 >
   <h1 class="text-xl text-transparent mb-4">{LongTailKeywords.one}</h1>
   <div
-    class="h-[20vh] md:w-full backdrop-invert backdrop-opacity-10
-  overflow-y-auto overflow-hidden webkit-scrollbar-hide
-  flex flex-col items-center"
+    class="h-[30vh] md:h-[40vh] w-full max-w-2xl bg-white/5 backdrop-blur-sm
+  overflow-y-auto scrollbar-none
+  flex flex-col items-center gap-1 px-2"
     aria-description={LongTailKeywords.two}
   >
     {
-      data.map((line, index) => (
-        <p
-          class={`max-w-2xl text-xs md:text-2xl py-2 ${index === 0 ? "opacity-100 font-semibold" : "opacity-75"}`}
-        >
-          {line}
-        </p>
-      ))
+      data.map((goal, index) => {
+        const badge = getGoalTypeBadge(goal.goalType);
+        return (
+          <div
+            class={`w-full p-2 md:p-3 rounded-lg transition-all duration-200 hover:bg-black/20 hover:border-l-4
+              ${goal.isOfficial 
+                ? 'hover:border-oldgold-400' 
+                : 'hover:border-gray-400'
+              }
+              ${index === 0 ? 'bg-oldgold-400/10 border-l-4 border-oldgold-400' : 'border-l-4 border-transparent'}
+            `}
+          >
+            <div class="flex items-center gap-1 md:gap-4 flex-nowrap overflow-hidden">
+              <span class={`text-xs md:text-lg font-bold min-w-[30px] md:min-w-[40px] ${goal.isOfficial ? 'text-oldgold-400' : 'text-gray-300'}`}>
+                {goal.isOfficial ? goal.number : 'N.O'}
+              </span>
+              
+              <span class={`text-xs px-1 py-1 rounded-full font-medium w-5 md:w-6 h-5 md:h-6 flex items-center justify-center
+                ${goal.venue === 'Home' 
+                  ? 'bg-green-600 text-white' 
+                  : goal.venue === 'Away'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-600 text-white'
+                }`}>
+                {goal.venue === 'Home' ? 'H' : goal.venue === 'Away' ? 'A' : 'N'}
+              </span>
+              
+              <span class="text-xs md:text-sm text-oldgold-400 font-medium min-w-[35px] md:min-w-auto">
+                <span class="md:hidden">{goal.mobileDate}</span>
+                <span class="hidden md:inline">{goal.date}</span>
+              </span>
+              
+              <span class="text-xs md:text-base text-white flex-grow truncate min-w-0">
+                {goal.matchInfo}
+              </span>
+              
+              <span class="text-xs text-gray-300 min-w-[30px]">
+                {goal.time}
+              </span>
+
+               <span class={`text-xs px-1 md:px-2 py-1 rounded-full text-white font-medium w-10 md:w-16 h-5 md:h-6 flex items-center justify-center ${badge.color}`}>
+                {badge.text}
+              </span>
+
+            </div>
+          </div>
+        );
+      })
     }
   </div>
 </section>
