@@ -53,4 +53,66 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  /* Goal Counter Enhancement */
+  .goal-counter {
+    @apply text-oldgold-400;
+    animation: pulse-glow 3s ease-in-out infinite;
+    text-shadow: 2px 4px 8px rgba(184,134,11,0.7);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% {
+      transform: scale(1.02);
+      filter: brightness(1.1);
+    }
+  }
+
+  .goal-counter-container {
+    position: relative;
+  }
+
+  .goal-counter-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(184, 134, 11, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glow-pulse 3s ease-in-out infinite;
+    z-index: -1;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  .subtitle-enhanced {
+    @apply text-oldgold-400;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .description-enhanced {
+    @apply text-oldgold-400;
+    font-weight: 500;
+  }
+
+  .text-white-80 {
+    @apply text-white/80;
+  }
 }

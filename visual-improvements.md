@@ -13,10 +13,10 @@ This document provides a structured roadmap for visual improvements organized by
 - [ ] **Estimate**: 30 minutes
 
 #### 1.2 Main Goal Counter Enhancement  
-- [ ] **Task**: Make goal counter (#941) more prominent with animations
-- [ ] **Action**: Add pulsing animation, larger typography, and gradient effects
-- [ ] **Files**: `src/components/HeroSection.astro`
-- [ ] **Estimate**: 1 hour
+- [x] **Task**: Make goal counter (#941) more prominent with animations
+- [x] **Action**: Add pulsing animation, larger typography, and gradient effects
+- [x] **Files**: `src/components/HeroSection.astro`
+- [x] **Estimate**: 1 hour
 
 #### 1.3 Footer Positioning Fix
 - [ ] **Task**: Fix footer overlap with main content

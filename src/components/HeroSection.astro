@@ -1,6 +1,6 @@
 ---
-const title = "943";
-const text = "Last goal September 09 2025";
+const title = "945";
+const text = "Last goal September 20 2025";
 const longText = "Cristiano Ronaldo goals scored all time";
 
 const LongTailKeywords = {
@@ -10,12 +10,14 @@ const LongTailKeywords = {
 
 ---
 
-  <section class="flex-none justify-center items-center text-center p-4 mt-4
+  <section class="flex-none justify-center items-center text-center p-4 mt-20 md:mt-8
                   md:w-full md:items-end md:justify-end md:text-right">
-    <h1 class="text-xl text-black mb-1 " >{LongTailKeywords.one}</h1>
-    <h1 class="text-6xl md:text-9xl mb-4 [text-shadow:_2px_4px_8px_rgba(184,134,11,0.7)]"
-      aria-description={LongTailKeywords.two}>{title}</h1>
-    <p class="text-sm md:text-md">{text}</p>
-    <h3 class="text-sm pt-4 pb-0
+    <h1 class="text-xl subtitle-enhanced mb-2">{LongTailKeywords.one}</h1>
+    <div class="goal-counter-container mb-6">
+      <h1 class="goal-counter text-7xl md:text-[12rem] font-black tracking-tight leading-none"
+          aria-description={LongTailKeywords.two}>{title}</h1>
+    </div>
+    <p class="text-sm md:text-lg text-white-80 mb-2">{text}</p>
+    <h3 class="description-enhanced text-sm pt-4 pb-0 font-medium
               md:text-4xl md:w-1/3 md:ml-auto">{longText}</h3>
   </section>
