@@ -26,7 +26,13 @@ npm run scrape:dry-run   # Test without changes
 
 ### GitHub Actions
 
-The scraper runs automatically every 10 minutes during Saudi Pro League match windows (Thu/Fri/Sat 14:00-22:00 UTC). Manual triggers always run via `workflow_dispatch`.
+The scraper runs automatically every 10 minutes during match windows. Manual triggers always run via `workflow_dispatch`.
+
+**Setup:**
+1. Go to repo → Settings → Actions → General
+2. Enable "Allow all actions"
+3. Set "Workflow permissions" to **Read and write permissions**
+4. Test via Actions tab → "Scrape Goals" → "Run workflow"
 
 ## Code Quality
 
