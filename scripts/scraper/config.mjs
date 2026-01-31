@@ -29,15 +29,10 @@ export const CONFIG = {
 
   // Team name mappings for consistency
   TEAM_MAPPINGS: {
-    'Al-Nassr FC': 'Al-Nassr',
-    'Al Nassr': 'Al-Nassr',
-    'Al-Nassr Riad': 'Al-Nassr',
-    'Al-Nassr Riyadh': 'Al-Nassr',
-    'Manchester United': 'Man United',
-    'Manchester Utd': 'Man United',
-    'Real Madrid CF': 'Real Madrid',
-    'Juventus FC': 'Juventus',
-    'Sporting CP': 'Sporting',
+    'Al-Nassr FC': 'Al-Nassr FC',
+    'Al Nassr': 'Al-Nassr FC',
+    'Al-Nassr Riad': 'Al-Nassr FC',
+    'Al-Nassr Riyadh': 'Al-Nassr FC',
   },
 
   // Goal type mappings

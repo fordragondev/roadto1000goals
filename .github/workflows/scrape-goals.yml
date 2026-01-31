@@ -24,9 +24,8 @@ jobs:
             const hour = now.getUTCHours();
             // Saudi Pro League: Thu, Fri, Sat | 14:00-22:00 UTC (17:00-01:00 Saudi)
             const windows = [
-              { day: 4, startHour: 14, endHour: 22 },  // Thursday
-              { day: 5, startHour: 14, endHour: 22 },  // Friday
-              { day: 6, startHour: 14, endHour: 22 },  // Saturday
+              { day: 1, startHour: 10, endHour: 12 },  // Monday
+              { day: 5, startHour: 12, endHour: 14 },  // Friday
             ];
             const inWindow = windows.some(w =>
               w.day === day && hour >= w.startHour && hour < w.endHour
