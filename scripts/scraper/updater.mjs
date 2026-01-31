@@ -1,6 +1,11 @@
 // Update RoadSection.astro with new goal data
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 import { fileURLToPath } from 'url';
 import { CONFIG } from './config.mjs';
 
@@ -15,8 +20,8 @@ export function readExistingGoals() {
   const componentPath = join(ROOT_DIR, CONFIG.COMPONENT_FILE);
   const content = readFileSync(componentPath, 'utf-8');
 
-  // Match the rawData array
-  const rawDataPattern = /const rawData = \[([\s\S]*?)\];/;
+  // Match the rawData array (semicolon is optional)
+  const rawDataPattern = /const rawData = \[([\s\S]*?)\n\]/;
   const match = content.match(rawDataPattern);
 
   if (!match) {
@@ -171,8 +176,8 @@ export function updateAstroComponent(allGoals) {
   const componentPath = join(ROOT_DIR, CONFIG.COMPONENT_FILE);
   const content = readFileSync(componentPath, 'utf-8');
 
-  // Match the rawData array
-  const rawDataPattern = /const rawData = \[([\s\S]*?)\];/;
+  // Match the rawData array (no semicolon at end)
+  const rawDataPattern = /const rawData = \[([\s\S]*?)\n\]/;
   const match = content.match(rawDataPattern);
 
   if (!match) {
@@ -206,4 +211,52 @@ export function compareGoals(newGoals, existingRaw) {
     total: existingRaw.length + newGoals.length,
     newGoalsList: newGoals.map((g) => g.raw),
   };
+}
+
+/**
+ * Convert date from MM/DD/YY to "Month Day Year" format
+ */
+function formatDateForHero(dateStr) {
+  const [month, day, year] = dateStr.split('/');
+  const monthName = MONTHS[parseInt(month) - 1];
+  const fullYear = parseInt(year) > 50 ? 1900 + parseInt(year) : 2000 + parseInt(year);
+  return `${monthName} ${parseInt(day)} ${fullYear}`;
+}
+
+/**
+ * Update HeroSection.astro with latest goal count and date
+ * @param {string[]} allGoals - Complete array of raw goal strings
+ * @returns {boolean} Whether file was updated
+ */
+export function updateHeroSection(allGoals) {
+  const heroPath = join(ROOT_DIR, 'src/components/HeroSection.astro');
+  const content = readFileSync(heroPath, 'utf-8');
+
+  // Get the highest official goal number
+  const highestGoal = getHighestGoalNumber(allGoals);
+
+  // Get the most recent goal's date (first item in array, newest first)
+  const mostRecentGoal = allGoals[0];
+  const parts = mostRecentGoal.split(' ');
+  const dateStr = parts[1]; // MM/DD/YY format
+  const formattedDate = formatDateForHero(dateStr);
+
+  // Update title (goal count)
+  const titlePattern = /const title = "[^"]+";/;
+  const newTitle = `const title = "${highestGoal}";`;
+
+  // Update text (last goal date)
+  const textPattern = /const text = "[^"]+";/;
+  const newText = `const text = "Last goal ${formattedDate}";`;
+
+  let newContent = content.replace(titlePattern, newTitle);
+  newContent = newContent.replace(textPattern, newText);
+
+  if (newContent === content) {
+    return false;
+  }
+
+  writeFileSync(heroPath, newContent, 'utf-8');
+  console.log(`Updated ${heroPath}`);
+  return true;
 }

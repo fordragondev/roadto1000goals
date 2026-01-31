@@ -22,7 +22,7 @@ const parseGoalData = (goalString) => {
   // Format date for mobile (shorter version)
   const formatMobileDate = (dateStr) => {
     // Convert MM/DD/YY to M/D
-    const [month, day, year] = dateStr.split('/');
+    const [month, day] = dateStr.split('/');
     return `${parseInt(month)}/${parseInt(day)}`;
   };
   

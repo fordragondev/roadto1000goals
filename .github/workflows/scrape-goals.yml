@@ -53,6 +53,6 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add src/components/RoadSection.astro
+          git add src/components/RoadSection.astro src/components/HeroSection.astro
           git diff --staged --quiet || git commit -m "Update goal data"
           git push

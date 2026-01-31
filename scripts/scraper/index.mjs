@@ -8,6 +8,7 @@ import {
   findNewGoals,
   mergeGoals,
   updateAstroComponent,
+  updateHeroSection,
   compareGoals,
   getHighestGoalNumber,
   assignGoalNumbers,
@@ -79,11 +80,12 @@ async function main() {
       console.log('  Would add the following goals:');
       comparison.newGoalsList.forEach((g) => console.log(`    ${g}`));
     } else {
-      console.log('Step 6: Updating RoadSection.astro...');
+      console.log('Step 6: Updating components...');
       const mergedGoals = mergeGoals(numberedGoals, existingGoals);
-      const updated = updateAstroComponent(mergedGoals);
+      const roadUpdated = updateAstroComponent(mergedGoals);
+      const heroUpdated = updateHeroSection(mergedGoals);
 
-      if (updated) {
+      if (roadUpdated || heroUpdated) {
         console.log(`  Successfully added ${comparison.new} new goal(s)!`);
       } else {
         console.log('  No changes needed.');
