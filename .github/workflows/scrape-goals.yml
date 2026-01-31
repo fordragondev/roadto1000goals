@@ -1,0 +1,59 @@
+name: Scrape Goals
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Every 10 minutes
+  workflow_dispatch:         # Manual trigger (always runs)
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check if within match window
+        id: check-schedule
+        run: |
+          node -e "
+            const now = new Date();
+            const day = now.getUTCDay();
+            const hour = now.getUTCHours();
+            // Saudi Pro League: Thu, Fri, Sat | 14:00-22:00 UTC (17:00-01:00 Saudi)
+            const windows = [
+              { day: 4, startHour: 14, endHour: 22 },  // Thursday
+              { day: 5, startHour: 14, endHour: 22 },  // Friday
+              { day: 6, startHour: 14, endHour: 22 },  // Saturday
+            ];
+            const inWindow = windows.some(w =>
+              w.day === day && hour >= w.startHour && hour < w.endHour
+            );
+            const shouldRun = inWindow || '${{ github.event_name }}' === 'workflow_dispatch';
+            console.log('Current: Day ' + day + ', Hour ' + hour + ' UTC');
+            console.log('In window: ' + inWindow);
+            console.log('should_run=' + shouldRun);
+          " >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        if: contains(steps.check-schedule.outputs.should_run, 'true')
+        run: npm ci
+
+      - name: Install Playwright
+        if: contains(steps.check-schedule.outputs.should_run, 'true')
+        run: npx playwright install chromium
+
+      - name: Run scraper
+        if: contains(steps.check-schedule.outputs.should_run, 'true')
+        run: npm run scrape
+
+      - name: Commit changes
+        if: contains(steps.check-schedule.outputs.should_run, 'true')
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add src/components/RoadSection.astro
+          git diff --staged --quiet || git commit -m "Update goal data"
+          git push

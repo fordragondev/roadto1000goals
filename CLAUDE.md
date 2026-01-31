@@ -32,6 +32,13 @@ Preview production build:
 npm run preview
 ```
 
+Code quality:
+```bash
+npm run typecheck   # TypeScript type checking
+npm run lint        # ESLint
+npm run check       # Run both typecheck and lint
+```
+
 ## Architecture and Structure
 
 ### Framework Stack
@@ -80,3 +87,33 @@ When updating goal data in `RoadSection.astro`, maintain the format:
 
 ### SEO Considerations
 The site includes SEO-focused elements like long-tail keywords for Cristiano Ronaldo goal tracking queries embedded in components.
+
+## Goal Scraper
+
+Automated scraper using Playwright to fetch goals and update `RoadSection.astro`.
+
+### Scraper Commands
+```bash
+npm run scrape           # Run scraper and update RoadSection.astro
+npm run scrape:dry-run   # Test without writing changes
+npm run scrape -- --debug  # Save debug screenshot
+```
+
+### Scraper Structure
+- `scripts/scraper/index.mjs` - Main entry point
+- `scripts/scraper/scraper.mjs` - Playwright scraping logic with stealth plugin
+- `scripts/scraper/transformer.mjs` - Data transformation (Web source → rawData format)
+- `scripts/scraper/updater.mjs` - File update and goal comparison logic
+- `scripts/scraper/config.mjs` - URLs, selectors, team/goal type mappings
+
+### GitHub Actions Automation
+`.github/workflows/scrape-goals.yml` runs every 10 minutes during Saudi Pro League match windows:
+- **Days:** Thursday, Friday, Saturday
+- **Hours:** 14:00-22:00 UTC (17:00-01:00 Saudi time)
+- Manual trigger via `workflow_dispatch` always runs
+
+### Technical Notes
+- Uses `playwright-extra` with stealth plugin to bypass source's anti-bot protection
+- Scrapes only first page (recent goals) - historical data preserved
+- Compares goals by date + venue + minute to detect new entries
+- Assigns goal numbers based on highest existing + chronological order
