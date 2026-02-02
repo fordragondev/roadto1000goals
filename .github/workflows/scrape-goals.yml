@@ -20,24 +20,36 @@ jobs:
         run: |
           # Get current day (1=Mon, 5=Fri) and hour in UTC
           DAY=$(date -u +%u)
-          HOUR=$(date -u +%-H)
+          HOUR=$(date -u +%H)
+
+          # Remove leading zeros for arithmetic
+          DAY=$((10#$DAY))
+          HOUR=$((10#$HOUR))
 
           echo "Current: Day $DAY, Hour $HOUR UTC"
+          echo "Event: ${{ github.event_name }}"
+
+          # Default to not running
+          SHOULD_RUN=false
 
           # Match windows: Monday 10-12 UTC, Friday 12-14 UTC
-          SHOULD_RUN=false
-          if [ "$DAY" = "1" ] && [ "$HOUR" -ge 10 ] && [ "$HOUR" -lt 12 ]; then
+          if (( DAY == 1 && HOUR >= 10 && HOUR < 12 )); then
+            echo "Within Monday window (10-12 UTC)"
             SHOULD_RUN=true
-          elif [ "$DAY" = "5" ] && [ "$HOUR" -ge 12 ] && [ "$HOUR" -lt 14 ]; then
+          elif (( DAY == 5 && HOUR >= 12 && HOUR < 14 )); then
+            echo "Within Friday window (12-14 UTC)"
             SHOULD_RUN=true
+          else
+            echo "Outside match windows"
           fi
 
           # Always run for manual triggers
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Manual trigger - forcing run"
             SHOULD_RUN=true
           fi
 
-          echo "Should run: $SHOULD_RUN"
+          echo "should_run=$SHOULD_RUN"
           echo "should_run=$SHOULD_RUN" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
