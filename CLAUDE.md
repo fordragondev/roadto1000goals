@@ -107,10 +107,16 @@ npm run scrape -- --debug  # Save debug screenshot
 - `scripts/scraper/config.mjs` - URLs, selectors, team/goal type mappings
 
 ### GitHub Actions Automation
-`.github/workflows/scrape-goals.yml` runs every 10 minutes during Saudi Pro League match windows:
-- **Days:** Thursday, Friday, Saturday
-- **Hours:** 14:00-22:00 UTC (17:00-01:00 Saudi time)
+`.github/workflows/scrape-goals.yml` uses precise cron schedules for match windows:
+- **Monday:** 10:00-11:59 UTC (every 10 min)
+- **Friday:** 12:00-13:59 UTC (every 10 min)
 - Manual trigger via `workflow_dispatch` always runs
+
+Cron expressions:
+```yaml
+- cron: '*/10 10-11 * * 1'  # Monday
+- cron: '*/10 12-13 * * 5'  # Friday
+```
 
 ### Technical Notes
 - Uses `playwright-extra` with stealth plugin to bypass source's anti-bot protection

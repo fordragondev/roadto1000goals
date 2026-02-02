@@ -49,3 +49,11 @@ npm run check       # Run both typecheck and lint
 npm run build
 npm run preview
 ```
+
+## Security
+
+```bash
+npm audit              # Check for vulnerabilities
+npm outdated           # Check for outdated packages
+npm update             # Update packages
+```
