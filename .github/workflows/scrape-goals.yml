@@ -18,23 +18,26 @@ jobs:
       - name: Check if within match window
         id: check-schedule
         run: |
-          SHOULD_RUN=$(node -e "
-            const now = new Date();
-            const day = now.getUTCDay();
-            const hour = now.getUTCHours();
-            // Saudi Pro League: Thu, Fri, Sat | 14:00-22:00 UTC (17:00-01:00 Saudi)
-            const windows = [
-              { day: 1, startHour: 10, endHour: 12 },  // Monday
-              { day: 5, startHour: 12, endHour: 14 },  // Friday
-            ];
-            const inWindow = windows.some(w =>
-              w.day === day && hour >= w.startHour && hour < w.endHour
-            );
-            const shouldRun = inWindow || '${{ github.event_name }}' === 'workflow_dispatch';
-            console.error('Current: Day ' + day + ', Hour ' + hour + ' UTC');
-            console.error('In window: ' + inWindow);
-            console.log(shouldRun);
-          ")
+          # Get current day (1=Mon, 5=Fri) and hour in UTC
+          DAY=$(date -u +%u)
+          HOUR=$(date -u +%-H)
+
+          echo "Current: Day $DAY, Hour $HOUR UTC"
+
+          # Match windows: Monday 10-12 UTC, Friday 12-14 UTC
+          SHOULD_RUN=false
+          if [ "$DAY" = "1" ] && [ "$HOUR" -ge 10 ] && [ "$HOUR" -lt 12 ]; then
+            SHOULD_RUN=true
+          elif [ "$DAY" = "5" ] && [ "$HOUR" -ge 12 ] && [ "$HOUR" -lt 14 ]; then
+            SHOULD_RUN=true
+          fi
+
+          # Always run for manual triggers
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SHOULD_RUN=true
+          fi
+
+          echo "Should run: $SHOULD_RUN"
           echo "should_run=$SHOULD_RUN" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
