@@ -2,7 +2,10 @@ name: Scrape Goals
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Every 10 minutes
+    # Monday 10:00-11:59 UTC (every 10 min)
+    - cron: '*/10 10-11 * * 1'
+    # Friday 12:00-13:59 UTC (every 10 min)
+    - cron: '*/10 12-13 * * 5'
   workflow_dispatch:         # Manual trigger (always runs)
 
 jobs:
@@ -15,57 +18,26 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Check if within match window
+      - name: Check trigger
         id: check-schedule
         run: |
-          # Get current day (1=Mon, 5=Fri) and hour in UTC
-          DAY=$(date -u +%u)
-          HOUR=$(date -u +%H)
-
-          # Remove leading zeros for arithmetic
-          DAY=$((10#$DAY))
-          HOUR=$((10#$HOUR))
-
-          echo "Current: Day $DAY, Hour $HOUR UTC"
           echo "Event: ${{ github.event_name }}"
+          echo "Time: $(date -u '+%A %H:%M UTC')"
 
-          # Default to not running
-          SHOULD_RUN=false
-
-          # Match windows: Monday 10-12 UTC, Friday 12-14 UTC
-          if (( DAY == 1 && HOUR >= 10 && HOUR < 12 )); then
-            echo "Within Monday window (10-12 UTC)"
-            SHOULD_RUN=true
-          elif (( DAY == 5 && HOUR >= 12 && HOUR < 14 )); then
-            echo "Within Friday window (12-14 UTC)"
-            SHOULD_RUN=true
-          else
-            echo "Outside match windows"
-          fi
-
-          # Always run for manual triggers
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "Manual trigger - forcing run"
-            SHOULD_RUN=true
-          fi
-
-          echo "should_run=$SHOULD_RUN"
-          echo "should_run=$SHOULD_RUN" >> $GITHUB_OUTPUT
+          # Cron already limits to match windows, so scheduled runs are valid
+          # Manual triggers always run
+          echo "should_run=true" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
-        if: contains(steps.check-schedule.outputs.should_run, 'true')
         run: npm ci
 
       - name: Install Playwright
-        if: contains(steps.check-schedule.outputs.should_run, 'true')
         run: npx playwright install chromium
 
       - name: Run scraper
-        if: contains(steps.check-schedule.outputs.should_run, 'true')
         run: npm run scrape
 
       - name: Commit changes
-        if: contains(steps.check-schedule.outputs.should_run, 'true')
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
