@@ -69,7 +69,9 @@ const currentPage = {
 		<!-- Google tag (gtag.js) -->
 		<script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
 		<script type="text/partytown">
+			// @ts-ignore — dataLayer is injected by GTM at runtime
 			window.dataLayer = window.dataLayer || [];
+			// @ts-ignore — dataLayer is injected by GTM at runtime
 			function gtag(){dataLayer.push(arguments);} // eslint-disable-line no-undef
 			gtag('js', new Date());
 
