@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is an Astro-based website tracking Cristiano Ronaldo's goals toward 1000 career goals. The site is deployed at https://roadto1000goals.com/.
 
-## Implementation Guidedance
+## Implementation Guidance
 
 - All improvements maintain the clean, minimal design aesthetic
 - Mobile-first responsive approach
@@ -36,14 +36,15 @@ Code quality:
 ```bash
 npm run typecheck   # TypeScript type checking
 npm run lint        # ESLint
+npm run lint:fix    # ESLint with auto-fix
 npm run check       # Run both typecheck and lint
 ```
 
 ## Architecture and Structure
 
 ### Framework Stack
-- **Astro 5.2.3**: Static site generator with component-based architecture
-- **TailwindCSS 4.0.2**: Styling framework with custom configuration
+- **Astro**: Static site generator with component-based architecture
+- **TailwindCSS**: Styling framework with custom configuration
 - **Partytown**: Third-party script optimization for analytics
 - **TypeScript**: Strict type checking enabled
 
@@ -56,10 +57,12 @@ npm run check       # Run both typecheck and lint
 - `src/scripts/`: Client-side JavaScript (header shrinking functionality)
 
 ### Core Data Management
-The main goal data is stored as a hardcoded array in `RoadSection.astro` (line 2-51). This includes:
-- Goal number, date, match details, and goal type
-- Both official ("941", "940") and non-official ("N.O") goals
-- Data is manually updated with each new goal
+Goal data lives in two components that the scraper updates together:
+
+- **`src/components/RoadSection.astro`** — hardcoded `rawData` array (line ~42) with one string per goal
+- **`src/components/HeroSection.astro`** — `title` (current goal count) and `text` (last goal date) variables
+
+The `rawData` array **must keep its trailing-comma format** — the scraper uses a regex (`/const rawData = \[([\s\S]*?)\n\]/`) to find and replace the block, and depends on the closing `\n]` pattern.
 
 ### Styling Architecture
 - Custom TailwindCSS theme with Gravitas One and Roboto fonts
@@ -78,23 +81,20 @@ The main goal data is stored as a hardcoded array in `RoadSection.astro` (line 2
 
 ### Goal Data Updates
 When updating goal data in `RoadSection.astro`, maintain the format:
-`"[Goal Number] [Date] [H/A/N] [Team] vs. [Opponent] [Time]' [Goal Type]"`
+`"[Goal Number] [Date:MM/DD/YY] [H/A/N] [Team] vs. [Opponent] [Time]' [Goal Type]"`
 
-### Component Structure
-- All components use Astro's component syntax with frontmatter
-- Layouts provide consistent structure across pages
-- Components are self-contained with embedded styling
+Both official goals use a number (e.g., `"961"`) and non-official (friendly/pre-season) use `"N.O"`.
 
 ### SEO Considerations
 The site includes SEO-focused elements like long-tail keywords for Cristiano Ronaldo goal tracking queries embedded in components.
 
 ## Goal Scraper
 
-Automated scraper using Playwright to fetch goals and update `RoadSection.astro`.
+Automated scraper using Playwright to fetch goals and update `RoadSection.astro` and `HeroSection.astro`.
 
 ### Scraper Commands
 ```bash
-npm run scrape           # Run scraper and update RoadSection.astro
+npm run scrape           # Run scraper and update RoadSection.astro + HeroSection.astro
 npm run scrape:dry-run   # Test without writing changes
 npm run scrape -- --debug  # Save debug screenshot
 ```
@@ -121,5 +121,6 @@ Cron expressions:
 ### Technical Notes
 - Uses `playwright-extra` with stealth plugin to bypass source's anti-bot protection
 - Scrapes only first page (recent goals) - historical data preserved
-- Compares goals by date + venue + minute to detect new entries
+- Compares goals by date + venue + minute to detect new entries (not by goal number)
 - Assigns goal numbers based on highest existing + chronological order
+- Only commits `src/components/RoadSection.astro` and `src/components/HeroSection.astro`
