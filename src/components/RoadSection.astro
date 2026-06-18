@@ -126,12 +126,12 @@ const data = rawData.map(parseGoalData);
 
 // Helper function to get goal type badge color
 const getGoalTypeBadge = (goalType) => {
-  if (goalType.includes('Penalty')) return { color: 'bg-red-500', text: 'PEN' };
-  if (goalType.includes('Header')) return { color: 'bg-blue-500', text: 'HEAD' };
-  if (goalType.includes('Direct free kick')) return { color: 'bg-green-500', text: 'FK' };
-  if (goalType.includes('Counter attack')) return { color: 'bg-purple-500', text: 'COUNT' };
-  if (goalType.includes('Right-footed')) return { color: 'bg-amber-500', text: 'R.F' };
-  if (goalType.includes('Left-footed')) return { color: 'bg-orange-500', text: 'L.F' };
+  if (goalType.includes('Penalty')) return { color: 'bg-red-700', text: 'PEN' };
+  if (goalType.includes('Header')) return { color: 'bg-blue-700', text: 'HEAD' };
+  if (goalType.includes('Direct free kick')) return { color: 'bg-green-700', text: 'FK' };
+  if (goalType.includes('Counter attack')) return { color: 'bg-purple-800', text: 'COUNT' };
+  if (goalType.includes('Right-footed')) return { color: 'bg-amber-700', text: 'R.F' };
+  if (goalType.includes('Left-footed')) return { color: 'bg-orange-700', text: 'L.F' };
   return { color: 'bg-gray-500', text: 'GOAL' };
 };
 
@@ -171,11 +171,11 @@ const LongTailKeywords = {
               </span>
               
               <span class={`text-xs px-1 py-1 rounded-full font-medium w-5 md:w-6 h-5 md:h-6 flex items-center justify-center
-                ${goal.venue === 'Home' 
-                  ? 'bg-green-600 text-white' 
+                ${goal.venue === 'Home'
+                  ? 'bg-green-700 text-white'
                   : goal.venue === 'Away'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-600 text-white'
+                  ? 'bg-blue-700 text-white'
+                  : 'bg-gray-700 text-white'
                 }`}>
                 {goal.venue === 'Home' ? 'H' : goal.venue === 'Away' ? 'A' : 'N'}
               </span>
