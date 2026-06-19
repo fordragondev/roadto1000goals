@@ -132,7 +132,7 @@ const getGoalTypeBadge = (goalType) => {
   if (goalType.includes('Counter attack')) return { color: 'bg-purple-800', text: 'COUNT' };
   if (goalType.includes('Right-footed')) return { color: 'bg-amber-700', text: 'R.F' };
   if (goalType.includes('Left-footed')) return { color: 'bg-orange-700', text: 'L.F' };
-  return { color: 'bg-gray-500', text: 'GOAL' };
+  return { color: 'bg-gray-700', text: 'GOAL' };
 };
 
 const LongTailKeywords = {
@@ -145,7 +145,7 @@ const LongTailKeywords = {
   class="flex-grow overflow-y-auto w-full p-2
                   flex flex-col justify-center items-center"
 >
-  <h2 class="text-xl text-transparent mb-4">{LongTailKeywords.one}</h2>
+  <p class="text-xl text-transparent mb-4" aria-hidden="true">{LongTailKeywords.one}</p>
   <div
     class="h-[30vh] md:h-[40vh] w-full max-w-2xl bg-white/5 backdrop-blur-sm
   overflow-y-auto scrollbar-none

@@ -8,12 +8,11 @@ on:
     - cron: '*/10 12-13 * * 5'
   workflow_dispatch:         # Manual trigger (always runs)
 
-permissions:
-  contents: write
-
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -22,14 +21,11 @@ jobs:
           node-version: '20'
 
       - name: Check trigger
-        id: check-schedule
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          echo "Event: ${{ github.event_name }}"
+          echo "Event: $EVENT_NAME"
           echo "Time: $(date -u '+%A %H:%M UTC')"
-
-          # Cron already limits to match windows, so scheduled runs are valid
-          # Manual triggers always run
-          echo "should_run=true" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
         run: npm ci

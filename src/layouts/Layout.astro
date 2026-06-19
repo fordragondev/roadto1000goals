@@ -22,8 +22,8 @@ const currentPage = {
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="preload" as="image" fetchpriority="high" href={optimizedBackgroundImage.src} />
 		<meta name="viewport" content="width=device-width" />
+		<link rel="preload" as="image" fetchpriority="high" href={optimizedBackgroundImage.src} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>{currentPage.title} | {currentPage.text}</title>
 		<meta name="generator" content={Astro.generator} />
@@ -67,11 +67,9 @@ const currentPage = {
 		  </script>
 
 		<!-- Google tag (gtag.js) -->
-		<script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
-		<script type="text/partytown">
-			// @ts-ignore — dataLayer is injected by GTM at runtime
+		<script is:inline type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
+		<script is:inline type="text/partytown">
 			window.dataLayer = window.dataLayer || [];
-			// @ts-ignore — dataLayer is injected by GTM at runtime
 			function gtag(){dataLayer.push(arguments);} // eslint-disable-line no-undef
 			gtag('js', new Date());
 

@@ -9,7 +9,7 @@
     "astro": "astro",
     "scrape": "node scripts/scraper/index.mjs",
     "scrape:dry-run": "node scripts/scraper/index.mjs --dry-run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "astro check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "check": "npm run typecheck && npm run lint"

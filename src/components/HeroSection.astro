@@ -12,10 +12,11 @@ const LongTailKeywords = {
 
   <section class="flex-none justify-center items-center text-center p-4 mt-20 md:mt-8
                   md:w-full md:items-end md:justify-end md:text-right">
-    <h2 class="text-xl subtitle-enhanced mb-2">{LongTailKeywords.one}</h2>
+    <h2 class="text-xl subtitle-enhanced mb-2" aria-hidden="true">{LongTailKeywords.one}</h2>
     <div class="goal-counter-container mb-6">
-      <h1 class="goal-counter text-7xl md:text-[12rem] font-black tracking-tight leading-none"
-          aria-description={LongTailKeywords.two}>{title}</h1>
+      <h1 class="goal-counter text-7xl md:text-[12rem] font-black tracking-tight leading-none">
+          {title}<span class="sr-only"> career goals</span>
+      </h1>
     </div>
     <p class="text-sm md:text-lg text-white-80 mb-2">{text}</p>
     <h2 class="description-enhanced text-sm pt-4 pb-0 font-medium
