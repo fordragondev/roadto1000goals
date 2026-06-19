@@ -31,8 +31,7 @@ const currentPage = {
 		<!-- Schema Markup -->
 		<script type="application/ld+json">
 			{
-				// Your JSON-LD schema markup goes here
-			  	"@context": "https://schema.org",
+				"@context": "https://schema.org",
 				"@type": "WebPage",
 				"name": "Cristiano Ronaldo's Road to 1000 Goals",
 				"description": "Track Cristiano Ronaldo's journey to 1000 career goals! Get live updates on his current goal count, detailed stats by club and competition, and more.",
@@ -43,28 +42,23 @@ const currentPage = {
 					"alternateName": "CR7",
 					"description": "Cristiano Ronaldo dos Santos Aveiro is a Portuguese professional footballer who plays as a forward for Al Nassr and the Portugal national team. He is widely regarded as one of the greatest footballers of all time.",
 					"image": {
-					"@type": "ImageObject",
-					"url": "https://commons.wikimedia.org/w/index.php?curid=137935111",
-					"caption": "Cristiano Ronaldo playing for Al Nassr FC"
+						"@type": "ImageObject",
+						"url": "https://commons.wikimedia.org/w/index.php?curid=137935111",
+						"caption": "Cristiano Ronaldo playing for Al Nassr FC"
 					},
 					"sameAs": [
-					"https://en.wikipedia.org/wiki/Cristiano_Ronaldo",
-					"https://www.instagram.com/cristiano/", 
-					"https://www.youtube.com/@cristiano/videos" // Add other relevant social media profiles
+						"https://en.wikipedia.org/wiki/Cristiano_Ronaldo",
+						"https://www.instagram.com/cristiano/",
+						"https://www.youtube.com/@cristiano/videos"
 					],
 					"athlete": {
-					"@type": "SportsTeam",
-					"name": "Al Nassr FC",
-					"sameAs": "https://en.wikipedia.org/wiki/Al_Nassr_FC"
+						"@type": "SportsTeam",
+						"name": "Al Nassr FC",
+						"sameAs": "https://en.wikipedia.org/wiki/Al_Nassr_FC"
 					}
-				},
-				"potentialAction": {
-					//"@type": "SearchAction",
-					//"target": "https://www.roadto1000goals.com/search?q={search_term_string}", // Replace with your search URL if applicable
-					//"query-input": "required name=search_term_string"
 				}
 			}
-		  </script>
+		</script>
 
 		<!-- Google tag (gtag.js) -->
 		<script is:inline type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
@@ -77,8 +71,8 @@ const currentPage = {
 		</script>
 	</head>
 	<body class="bg-black bg-blend-overlay">
-		<div class="h-screen flex flex-col justify-center items-center animate-fade-in
-			bg-cover bg-[calc(50%-50vw)] md:bg-center" aria-label="Cr7 Portugal Jersey" 
+		<div class="h-screen w-full flex flex-col justify-center items-center animate-fade-in
+			bg-cover bg-[calc(50%-50vw)] md:bg-center" aria-label="Cr7 Portugal Jersey"
 			style={`background-image: url('${optimizedBackgroundImage.src}'); z-index: 0;`}>
 			<!-- Your content here -->
 			<Header />

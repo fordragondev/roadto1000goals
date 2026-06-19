@@ -9,10 +9,15 @@
 }
 
 @layer base {
+  html,
   body {
     margin: 0;
     width: 100%;
     height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
     @apply bg-black text-white;
   }
 
@@ -108,11 +113,53 @@
   }
 
   .description-enhanced {
-    @apply text-oldgold-400;
-    font-weight: 500;
+    @apply text-oldgold-400 font-bold;
   }
 
   .text-white-80 {
     @apply text-white/80;
+  }
+
+  /* Live update indicator — pulsing gold dot before the element */
+  .live-indicator::before {
+    content: '';
+    display: inline-block;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background-color: var(--color-oldgold-400);
+    margin-right: 0.4em;
+    vertical-align: middle;
+    animation: live-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+}
+
+/* Compact hero for landscape mobile — goals-log must stay visible */
+@media (max-height: 500px) and (orientation: landscape) {
+  #hero {
+    margin-top: 0.25rem;
+  }
+  #hero h2[aria-hidden="true"] {
+    display: none;
+  }
+  #hero .goal-counter {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  #hero .goal-counter-container {
+    margin-bottom: 0.25rem;
+  }
+  #hero p.live-indicator {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+  #hero h2.description-enhanced {
+    padding-top: 0.125rem;
+    font-size: 0.65rem;
   }
 }
