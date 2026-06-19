@@ -7,6 +7,10 @@ export const CONFIG = {
   // Scraping settings
   TIMEOUT: 60000,
 
+  // Retry settings for transient blocks (e.g. CloudFront 403)
+  MAX_RETRIES: 3,
+  RETRY_DELAY_MS: 15000,
+
   // Output paths (relative to project root)
   COMPONENT_FILE: 'src/components/RoadSection.astro',
 

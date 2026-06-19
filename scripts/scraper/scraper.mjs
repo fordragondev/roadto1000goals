@@ -18,19 +18,52 @@ export async function scrapeGoals() {
   });
 
   const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
     viewport: { width: 1920, height: 1080 },
     locale: 'en-US',
+    extraHTTPHeaders: {
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1',
+      'Sec-CH-UA': '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
+      'Sec-CH-UA-Mobile': '?0',
+      'Sec-CH-UA-Platform': '"Windows"',
+    },
   });
 
   const page = await context.newPage();
 
+  const debugMode = process.argv.includes('--debug');
+
   try {
+    // Random delay to avoid instant-connection fingerprint
+    const preDelay = 1500 + Math.floor(Math.random() * 2000);
+    await page.waitForTimeout(preDelay);
+
     console.log('Navigating to web source...');
-    await page.goto(CONFIG.GOALS_URL, {
+    const response = await page.goto(CONFIG.GOALS_URL, {
       waitUntil: 'domcontentloaded',
       timeout: CONFIG.TIMEOUT,
     });
+
+    // Check for block via HTTP status or known block page titles
+    const httpStatus = response?.status();
+    const title = await page.title();
+    const BLOCK_TITLES = ['ERROR', '403', 'Forbidden', 'Access Denied', 'Request blocked'];
+    const isBlocked = httpStatus === 403 || BLOCK_TITLES.some(s => title.includes(s));
+    if (isBlocked) {
+      console.log(`Page blocked (HTTP ${httpStatus ?? 'unknown'}, title: "${title}")`);
+      if (debugMode) {
+        const html = await page.content();
+        console.log('First 500 chars of HTML:', html.substring(0, 500));
+      }
+      throw new Error('CloudFront 403 block — will retry');
+    }
 
     // Wait for page to stabilize
     await page.waitForTimeout(3000);
@@ -60,7 +93,6 @@ export async function scrapeGoals() {
     }
 
     // Debug: Save screenshot
-    const debugMode = process.argv.includes('--debug');
     if (debugMode) {
       await page.screenshot({ path: 'debug-screenshot.png', fullPage: true });
       console.log('Saved debug screenshot');
@@ -89,10 +121,11 @@ export async function scrapeGoals() {
     }
 
     if (!tableFound) {
-      // Save page content for debugging
-      const html = await page.content();
       console.log('Page title:', await page.title());
-      console.log('First 2000 chars of HTML:', html.substring(0, 2000));
+      if (debugMode) {
+        const html = await page.content();
+        console.log('First 2000 chars of HTML:', html.substring(0, 2000));
+      }
       throw new Error('Could not find goals table');
     }
 

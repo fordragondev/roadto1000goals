@@ -2,6 +2,7 @@
 // Main entry point for goal scraper
 
 import { scrapeGoals } from './scraper.mjs';
+import { CONFIG } from './config.mjs';
 import { transformGoals, sortGoalsByDate } from './transformer.mjs';
 import {
   readExistingGoals,
@@ -19,6 +20,29 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const VERBOSE = args.includes('--verbose');
 
+const TRANSIENT_ERROR = 'CloudFront 403 block';
+
+async function scrapeWithRetry() {
+  for (let attempt = 1; attempt <= CONFIG.MAX_RETRIES; attempt++) {
+    try {
+      return await scrapeGoals();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isTransient = message.includes(TRANSIENT_ERROR);
+      if (!isTransient) {
+        throw error;
+      }
+      if (attempt < CONFIG.MAX_RETRIES) {
+        console.log(`  Attempt ${attempt} blocked (${message})`);
+        console.log(`  Retrying in ${CONFIG.RETRY_DELAY_MS / 1000}s... (attempt ${attempt + 1}/${CONFIG.MAX_RETRIES})`);
+        await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY_DELAY_MS));
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
 async function main() {
   console.log('=== Source Goal Scraper ===');
   console.log(`Mode: ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
@@ -30,10 +54,10 @@ async function main() {
     const existingGoals = readExistingGoals();
     console.log(`  Found ${existingGoals.length} existing goals`);
 
-    // Step 2: Scrape new goals from web source
+    // Step 2: Scrape new goals from web source (with retries)
     console.log('');
     console.log('Step 2: Scraping goals from web source...');
-    const scrapedGoals = await scrapeGoals();
+    const scrapedGoals = await scrapeWithRetry();
     console.log(`  Scraped ${scrapedGoals.length} goals from first page`);
 
     // Step 3: Transform data
