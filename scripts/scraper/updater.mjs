@@ -235,8 +235,8 @@ export function updateHeroSection(allGoals) {
   // Get the highest official goal number
   const highestGoal = getHighestGoalNumber(allGoals);
 
-  // Get the most recent goal's date (first item in array, newest first)
-  const mostRecentGoal = allGoals[0];
+  // Get the most recent official goal's date — skip N.O (friendly/pre-season) entries
+  const mostRecentGoal = allGoals.find(g => !g.trimStart().startsWith('N.O')) || allGoals[0];
   const parts = mostRecentGoal.split(' ');
   const dateStr = parts[1]; // MM/DD/YY format
   const formattedDate = formatDateForHero(dateStr);

@@ -10,7 +10,8 @@ export default defineConfig({
         plugins: [tailwindcss()],
         server: {
             watch: {
-                usePolling: true,
+                // Only poll in container/WSL2 environments where inotify doesn't cross the filesystem boundary
+                usePolling: !!process.env.CHOKIDAR_USEPOLLING,
             },
         },
       },

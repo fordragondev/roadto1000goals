@@ -17,6 +17,35 @@ const currentPage = {
   description: "Track Cristiano Ronaldo's journey to 1000 career goals! Get live updates on his current goal count, detailed stats by club and competition, and more!",
 };
 
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Cristiano Ronaldo's Road to 1000 Goals",
+  "description": "Track Cristiano Ronaldo's journey to 1000 career goals! Get live updates on his current goal count, detailed stats by club and competition, and more.",
+  "url": "https://www.roadto1000goals.com/",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Cristiano Ronaldo",
+    "alternateName": "CR7",
+    "description": "Cristiano Ronaldo dos Santos Aveiro is a Portuguese professional footballer who plays as a forward for Al Nassr and the Portugal national team. He is widely regarded as one of the greatest footballers of all time.",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://commons.wikimedia.org/w/index.php?curid=137935111",
+      "caption": "Cristiano Ronaldo playing for Al Nassr FC"
+    },
+    "sameAs": [
+      "https://en.wikipedia.org/wiki/Cristiano_Ronaldo",
+      "https://www.instagram.com/cristiano/",
+      "https://www.youtube.com/@cristiano/videos"
+    ],
+    "athlete": {
+      "@type": "SportsTeam",
+      "name": "Al Nassr FC",
+      "sameAs": "https://en.wikipedia.org/wiki/Al_Nassr_FC"
+    }
+  }
+});
+
 ---
 <!doctype html>
 <html lang="en">
@@ -29,44 +58,13 @@ const currentPage = {
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={currentPage.description}/>
 		<!-- Schema Markup -->
-		<script type="application/ld+json">
-			{
-				"@context": "https://schema.org",
-				"@type": "WebPage",
-				"name": "Cristiano Ronaldo's Road to 1000 Goals",
-				"description": "Track Cristiano Ronaldo's journey to 1000 career goals! Get live updates on his current goal count, detailed stats by club and competition, and more.",
-				"url": "https://www.roadto1000goals.com/",
-				"mainEntity": {
-					"@type": "Person",
-					"name": "Cristiano Ronaldo",
-					"alternateName": "CR7",
-					"description": "Cristiano Ronaldo dos Santos Aveiro is a Portuguese professional footballer who plays as a forward for Al Nassr and the Portugal national team. He is widely regarded as one of the greatest footballers of all time.",
-					"image": {
-						"@type": "ImageObject",
-						"url": "https://commons.wikimedia.org/w/index.php?curid=137935111",
-						"caption": "Cristiano Ronaldo playing for Al Nassr FC"
-					},
-					"sameAs": [
-						"https://en.wikipedia.org/wiki/Cristiano_Ronaldo",
-						"https://www.instagram.com/cristiano/",
-						"https://www.youtube.com/@cristiano/videos"
-					],
-					"athlete": {
-						"@type": "SportsTeam",
-						"name": "Al Nassr FC",
-						"sameAs": "https://en.wikipedia.org/wiki/Al_Nassr_FC"
-					}
-				}
-			}
-		</script>
-
+		<script type="application/ld+json" set:html={jsonLd}></script>
 		<!-- Google tag (gtag.js) -->
-		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-K6DCEHCT55"></script>
 		<script is:inline>
 			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);} // eslint-disable-line no-undef
+			function gtag(){window.dataLayer.push(arguments);}
 			gtag('js', new Date());
-
 			gtag('config', 'G-K6DCEHCT55');
 		</script>
 	</head>
