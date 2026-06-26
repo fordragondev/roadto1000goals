@@ -8,6 +8,11 @@ import './src/styles/global.css';
 export default defineConfig({
     vite: {
         plugins: [tailwindcss()],
+        server: {
+            watch: {
+                usePolling: true,
+            },
+        },
       },
     site: 'https://roadto1000goals.com/',
 });
