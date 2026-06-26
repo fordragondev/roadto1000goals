@@ -15,7 +15,6 @@
     "check": "npm run typecheck && npm run lint"
   },
   "dependencies": {
-    "@astrojs/partytown": "^2.1.7",
     "@tailwindcss/vite": "^4.0.2",
     "astro": "^5.2.3",
     "tailwindcss": "^4.0.2"
