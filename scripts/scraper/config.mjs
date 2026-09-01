@@ -1,8 +1,8 @@
 // Configuration for goal scraper
 
 export const CONFIG = {
-  // Source URLs - filtered to 2025 season for recent goals
-  GOALS_URL: 'https://www.transfermarkt.com/cristiano-ronaldo/alletore/spieler/8198/saison/2025/verein/0/liga/0/wettbewerb//pos/0/trainer_id/0/minute/0/torart/0/plus/1',
+  // Source URLs - filtered to 2026 season for recent goals
+  GOALS_URL: 'https://www.transfermarkt.com/cristiano-ronaldo/alletore/spieler/8198/saison/2026/verein/0/liga/0/wettbewerb//pos/0/trainer_id/0/minute/0/torart/0/plus/1',
 
   // Scraping settings
   TIMEOUT: 60000,
