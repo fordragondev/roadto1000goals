@@ -78,20 +78,44 @@ export async function scrapeGoals() {
     await page.waitForTimeout(preDelay);
 
     console.log('Navigating to web source...');
-    const response = await page.goto(CONFIG.GOALS_URL, {
+    let response = await page.goto(CONFIG.GOALS_URL, {
       waitUntil: 'domcontentloaded',
       timeout: CONFIG.TIMEOUT,
     });
 
     // Check for block via HTTP status or known block page titles
-    const httpStatus = response?.status();
-    const title = await page.title();
+    let httpStatus = response?.status();
+    let title = await page.title();
     const BLOCK_TITLES = ['ERROR', '403', 'Forbidden', 'Access Denied', 'Request blocked'];
     const isBlocked = httpStatus === 403 || BLOCK_TITLES.some(s => title.includes(s));
     if (isBlocked) {
       console.log(`Page blocked (HTTP ${httpStatus ?? 'unknown'}, title: "${title}")`);
       await logDiagnostics(page, response);
       throw new Error('CloudFront 403 block — will retry');
+    }
+
+    // AWS WAF (fronted by CloudFront) serves a 202 JS challenge instead of the
+    // real page. The challenge script needs time to run and set an
+    // aws-waf-token cookie, then the page must be re-fetched to get real content.
+    if (httpStatus === 202) {
+      const challengeHtml = await page.content();
+      const isWafChallenge = challengeHtml.includes('gokuProps') || challengeHtml.includes('awsWafCookieDomainList');
+      if (isWafChallenge) {
+        console.log('AWS WAF JS challenge detected (HTTP 202) — waiting for it to resolve...');
+        await page.waitForTimeout(10000);
+        response = await page.goto(CONFIG.GOALS_URL, {
+          waitUntil: 'domcontentloaded',
+          timeout: CONFIG.TIMEOUT,
+        });
+        httpStatus = response?.status();
+        title = await page.title();
+        if (httpStatus === 202) {
+          console.log(`Still blocked after challenge wait (HTTP ${httpStatus})`);
+          await logDiagnostics(page, response);
+          throw new Error('AWS WAF challenge unresolved — will retry');
+        }
+        console.log(`Challenge resolved (HTTP ${httpStatus})`);
+      }
     }
 
     // Wait for page to stabilize

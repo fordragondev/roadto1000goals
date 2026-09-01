@@ -20,7 +20,7 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const VERBOSE = args.includes('--verbose');
 
-const TRANSIENT_ERROR = 'CloudFront 403 block';
+const TRANSIENT_ERRORS = ['CloudFront 403 block', 'AWS WAF challenge unresolved'];
 
 async function scrapeWithRetry() {
   for (let attempt = 1; attempt <= CONFIG.MAX_RETRIES; attempt++) {
@@ -28,7 +28,7 @@ async function scrapeWithRetry() {
       return await scrapeGoals();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      const isTransient = message.includes(TRANSIENT_ERROR);
+      const isTransient = TRANSIENT_ERRORS.some((e) => message.includes(e));
       if (!isTransient) {
         throw error;
       }
