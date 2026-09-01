@@ -107,19 +107,17 @@ npm run scrape -- --debug  # Save debug screenshot
 - `scripts/scraper/config.mjs` - URLs, selectors, team/goal type mappings
 
 ### GitHub Actions Automation
-`.github/workflows/scrape-goals.yml` uses precise cron schedules for match windows:
-- **Monday:** 10:00-11:59 UTC (every 10 min)
-- **Friday:** 12:00-13:59 UTC (every 10 min)
+`.github/workflows/scrape-goals.yml` runs one cron window per known Al-Nassr
+fixture (not a recurring weekly guess — fixtures fall on every day of the
+week), each covering kickoff through ~2h to catch full-time + stoppage.
+Times are Riyadh kickoff (UTC+3, no DST) converted to UTC. Cron has no year
+field, so entries must be replaced each time a new fixture batch is
+announced — same cadence as the scraper's `saison` URL bump in `config.mjs`.
 - Manual trigger via `workflow_dispatch` always runs
 
-Cron expressions:
-```yaml
-- cron: '*/10 10-11 * * 1'  # Monday
-- cron: '*/10 12-13 * * 5'  # Friday
-```
-
 ### Technical Notes
-- Uses `playwright-extra` with stealth plugin to bypass source's anti-bot protection
+- Uses `patchright` (a Playwright fork patched against CDP-level automation
+  leaks) to bypass source's anti-bot protection (AWS WAF Bot Control)
 - Scrapes only first page (recent goals) - historical data preserved
 - Compares goals by date + venue + minute to detect new entries (not by goal number)
 - Assigns goal numbers based on highest existing + chronological order
