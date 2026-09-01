@@ -1,11 +1,8 @@
-// Playwright scraper for goal data
+// Playwright scraper for goal data, using Patchright (a Playwright fork
+// patched against CDP-level automation leaks) for bot-detection evasion.
 import fs from 'node:fs';
-import { chromium } from 'playwright-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { chromium } from 'patchright';
 import { CONFIG } from './config.mjs';
-
-// Enable stealth mode to avoid detection
-chromium.use(StealthPlugin());
 
 /**
  * Log response status/headers/title/HTML snippet and persist screenshot + HTML
@@ -45,27 +42,13 @@ async function logDiagnostics(page, response) {
 export async function scrapeGoals() {
   console.log('Launching browser...');
 
-  const browser = await chromium.launch({
+  // Patchright's evasions assume the patched browser's real fingerprint and
+  // headers are used unmodified — hand-rolled UA/client-hint overrides are a
+  // known giveaway when they drift from what the actual binary reports, so
+  // none are set here (unlike the previous playwright-extra setup).
+  const context = await chromium.launchPersistentContext('', {
     headless: true,
-  });
-
-  const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
-    viewport: { width: 1920, height: 1080 },
     locale: 'en-US',
-    extraHTTPHeaders: {
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Upgrade-Insecure-Requests': '1',
-      'Sec-Fetch-Dest': 'document',
-      'Sec-Fetch-Mode': 'navigate',
-      'Sec-Fetch-Site': 'none',
-      'Sec-Fetch-User': '?1',
-      'Sec-CH-UA': '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
-      'Sec-CH-UA-Mobile': '?0',
-      'Sec-CH-UA-Platform': '"Windows"',
-    },
   });
 
   const page = await context.newPage();
@@ -392,7 +375,7 @@ export async function scrapeGoals() {
     console.error('Scraping error:', error instanceof Error ? error.message : error);
     throw error;
   } finally {
-    await browser.close();
+    await context.close();
     console.log('Browser closed');
   }
 }
