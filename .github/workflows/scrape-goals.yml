@@ -2,24 +2,14 @@ name: Scrape Goals
 
 on:
   schedule:
-    # One window per known Al-Nassr fixture (Saudi Pro League 2026/27), each
-    # covering kickoff through ~2h to catch full-time + stoppage. Times are
-    # Riyadh kickoff (UTC+3, no DST) converted to UTC. Cron has no year field,
-    # so these entries must be removed/replaced once the season ends, and new
-    # ones added as each fixture batch is announced (same cadence as the
-    # scraper's `saison` URL bump).
-    - cron: '*/10 17-18 15 8 *'   # MD1  Sat 15 Aug, Al-Nassr vs Al-Fateh (20:00 KSA)
-    - cron: '*/10 15-16 21 8 *'   # MD2  Fri 21 Aug, Al-Riyadh vs Al-Nassr (18:00 KSA)
-    - cron: '*/10 17-18 25 8 *'   # MD3  Tue 25 Aug, Al-Ettifaq vs Al-Nassr (20:00 KSA)
-    - cron: '*/10 17-18 28 8 *'   # MD4  Fri 28 Aug, Al-Nassr vs Al-Taawoun (20:00 KSA)
-    - cron: '*/10 17-18 5 9 *'    # MD5  Sat 05 Sep, Al-Ittihad vs Al-Nassr (20:00 KSA)
-    - cron: '*/10 17-18 9 9 *'    # MD6  Wed 09 Sep, Al-Nassr vs Abha (20:00 KSA)
-    - cron: '*/10 17-18 12 9 *'   # MD7  Sat 12 Sep, Al-Khaleej vs Al-Nassr (20:00 KSA)
-    - cron: '*/10 17-18 9 10 *'   # MD8  Fri 09 Oct, Al-Nassr vs Al-Diriyah (20:00 KSA)
-    - cron: '*/10 17-18 15 10 *'  # MD9  Thu 15 Oct, Al-Ahli vs Al-Nassr (20:00 KSA)
-    - cron: '*/10 17-18 20 10 *'  # MD10 Tue 20 Oct, Al-Nassr vs NEOM SC (20:00 KSA)
-    - cron: '*/10 12-14 23 10 *'  # MD11 Fri 23 Oct, Al-Faisaly vs Al-Nassr (15:30 KSA)
-    - cron: '*/10 16-17 29 10 *'  # MD12 Thu 29 Oct, Al-Nassr vs Al-Kholood (19:00 KSA)
+    # Fixed daily checks, every day, year-round — no fixture data needed.
+    # Saudi Pro League matches never kick off late at night, so three checks
+    # spread across the typical match-end window catch new goals same-day
+    # without needing to track individual fixtures. Times are Riyadh local
+    # (UTC+3, no DST) converted to UTC.
+    - cron: '30 12 * * *'  # 15:30 KSA
+    - cron: '30 14 * * *'  # 17:30 KSA
+    - cron: '30 16 * * *'  # 19:30 KSA
   workflow_dispatch:         # Manual trigger (always runs)
 
 jobs:

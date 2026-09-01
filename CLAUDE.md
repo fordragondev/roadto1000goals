@@ -107,12 +107,12 @@ npm run scrape -- --debug  # Save debug screenshot
 - `scripts/scraper/config.mjs` - URLs, selectors, team/goal type mappings
 
 ### GitHub Actions Automation
-`.github/workflows/scrape-goals.yml` runs one cron window per known Al-Nassr
-fixture (not a recurring weekly guess — fixtures fall on every day of the
-week), each covering kickoff through ~2h to catch full-time + stoppage.
-Times are Riyadh kickoff (UTC+3, no DST) converted to UTC. Cron has no year
-field, so entries must be replaced each time a new fixture batch is
-announced — same cadence as the scraper's `saison` URL bump in `config.mjs`.
+`.github/workflows/scrape-goals.yml` runs three fixed daily checks, every day,
+year-round: 15:30 / 17:30 / 19:30 Riyadh time (12:30 / 14:30 / 16:30 UTC).
+No fixture tracking needed — Saudi Pro League matches don't kick off late at
+night, so this window catches new goals same-day regardless of the exact
+schedule. Requires no maintenance as new fixtures are announced (unlike the
+scraper's `saison` URL in `config.mjs`, which still needs an annual bump).
 - Manual trigger via `workflow_dispatch` always runs
 
 ### Technical Notes
