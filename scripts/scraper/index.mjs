@@ -120,10 +120,16 @@ async function main() {
     console.log('=== Scraping Complete ===');
 
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error('');
-    console.error('Error:', error instanceof Error ? error.message : error);
+    console.error('Error:', message);
     if (VERBOSE && error instanceof Error) {
       console.error(error.stack);
+    }
+    // Surface as a GitHub Actions annotation so it shows in the run summary,
+    // not just buried in the log.
+    if (process.env.GITHUB_ACTIONS) {
+      console.error(`::error::Scraper failed: ${message}`);
     }
     process.exit(1);
   }

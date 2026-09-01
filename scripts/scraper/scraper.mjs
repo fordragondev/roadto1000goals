@@ -1,10 +1,42 @@
 // Playwright scraper for goal data
+import fs from 'node:fs';
 import { chromium } from 'playwright-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { CONFIG } from './config.mjs';
 
 // Enable stealth mode to avoid detection
 chromium.use(StealthPlugin());
+
+/**
+ * Log response status/headers/title/HTML snippet and persist screenshot + HTML
+ * to disk so CI can surface them even without --debug (e.g. as workflow artifacts).
+ */
+async function logDiagnostics(page, response) {
+  const httpStatus = response?.status();
+  const headers = response?.headers() ?? {};
+  const title = await page.title();
+  const html = await page.content();
+
+  // Headers that hint at WAF/bot-detection vendors (Cloudflare, DataDome, etc.)
+  const interestingHeaders = ['server', 'cf-ray', 'cf-mitigated', 'x-datadome', 'retry-after', 'content-type'];
+  const headerSummary = interestingHeaders
+    .filter((h) => headers[h])
+    .map((h) => `${h}: ${headers[h]}`)
+    .join(', ');
+
+  console.log(`HTTP status: ${httpStatus ?? 'unknown'}`);
+  console.log(`Response headers: ${headerSummary || '(none of interest present)'}`);
+  console.log(`Page title: "${title}"`);
+  console.log(`HTML snippet (first 1000 chars): ${html.substring(0, 1000)}`);
+
+  try {
+    await page.screenshot({ path: 'debug-screenshot.png', fullPage: true });
+    fs.writeFileSync('debug-page.html', html);
+    console.log('Saved debug-screenshot.png and debug-page.html');
+  } catch (err) {
+    console.log('Failed to save debug artifacts:', err instanceof Error ? err.message : err);
+  }
+}
 
 /**
  * Scrape goals from source (first page only)
@@ -58,10 +90,7 @@ export async function scrapeGoals() {
     const isBlocked = httpStatus === 403 || BLOCK_TITLES.some(s => title.includes(s));
     if (isBlocked) {
       console.log(`Page blocked (HTTP ${httpStatus ?? 'unknown'}, title: "${title}")`);
-      if (debugMode) {
-        const html = await page.content();
-        console.log('First 500 chars of HTML:', html.substring(0, 500));
-      }
+      await logDiagnostics(page, response);
       throw new Error('CloudFront 403 block — will retry');
     }
 
@@ -121,11 +150,7 @@ export async function scrapeGoals() {
     }
 
     if (!tableFound) {
-      console.log('Page title:', await page.title());
-      if (debugMode) {
-        const html = await page.content();
-        console.log('First 2000 chars of HTML:', html.substring(0, 2000));
-      }
+      await logDiagnostics(page, response);
       throw new Error('Could not find goals table');
     }
 
