@@ -204,18 +204,35 @@ export async function scrapeGoals() {
       console.log('Table debug info:', JSON.stringify(debugInfo, null, 2));
     }
 
-    const goals = await page.evaluate(() => {
-      // Find the goals table (the one with tbody containing goal data)
-      const tables = document.querySelectorAll('table');
+    // Prefer the known selectors (same ones used to detect the table above)
+    // over a row-count heuristic — early in a season the real goals table can
+    // have very few rows, letting an unrelated sidebar/widget table with more
+    // rows win a "most rows" comparison and silently produce zero goals.
+    const extractionSelectors = tableSelectors.filter((s) => s !== 'table');
+
+    const goals = await page.evaluate((prioritySelectors) => {
       const extractedGoals = [];
       let goalsTable = null;
-      let maxRows = 0;
 
-      for (const table of tables) {
-        const rowCount = table.querySelectorAll('tbody tr').length;
-        if (rowCount > maxRows) {
-          maxRows = rowCount;
-          goalsTable = table;
+      for (const selector of prioritySelectors) {
+        const candidate = document.querySelector(selector);
+        if (candidate && candidate.querySelectorAll('tbody tr').length > 0) {
+          goalsTable = candidate;
+          break;
+        }
+      }
+
+      // Fallback: table with the most rows, in case none of the known
+      // selectors matched anything with actual data rows.
+      if (!goalsTable) {
+        const tables = document.querySelectorAll('table');
+        let maxRows = 0;
+        for (const table of tables) {
+          const rowCount = table.querySelectorAll('tbody tr').length;
+          if (rowCount > maxRows) {
+            maxRows = rowCount;
+            goalsTable = table;
+          }
         }
       }
 
@@ -366,7 +383,7 @@ export async function scrapeGoals() {
       }
 
       return extractedGoals;
-    });
+    }, extractionSelectors);
 
     console.log(`Scraped ${goals.length} goals from first page`);
     return goals;
