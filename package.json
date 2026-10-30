@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "node --test scripts/scraper/*.test.mjs",
     "scrape": "node scripts/scraper/index.mjs",
     "scrape:dry-run": "node scripts/scraper/index.mjs --dry-run",
     "typecheck": "astro check",

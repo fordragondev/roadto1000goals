@@ -101,7 +101,7 @@ npm run scrape -- --debug  # Save debug screenshot
 
 ### Scraper Structure
 - `scripts/scraper/index.mjs` - Main entry point
-- `scripts/scraper/scraper.mjs` - Playwright scraping logic with stealth plugin
+- `scripts/scraper/scraper.mjs` - Patchright browser navigation and scraping logic
 - `scripts/scraper/transformer.mjs` - Data transformation (Web source → rawData format)
 - `scripts/scraper/updater.mjs` - File update and goal comparison logic
 - `scripts/scraper/config.mjs` - URLs, selectors, team/goal type mappings
@@ -116,8 +116,8 @@ scraper's `saison` URL in `config.mjs`, which still needs an annual bump).
 - Manual trigger via `workflow_dispatch` always runs
 
 ### Technical Notes
-- Uses `patchright` (a Playwright fork patched against CDP-level automation
-  leaks) to bypass source's anti-bot protection (AWS WAF Bot Control)
+- Uses `patchright` with real Chrome in headed mode (Xvfb in CI), as required
+  by Patchright's recommended anti-detection setup for AWS WAF Bot Control
 - Scrapes only first page (recent goals) - historical data preserved
 - Compares goals by date + venue + minute to detect new entries (not by goal number)
 - Assigns goal numbers based on highest existing + chronological order

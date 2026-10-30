@@ -34,11 +34,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Patchright
-        run: npx patchright install chromium
+      - name: Run scraper tests
+        run: npm test
+
+      - name: Install Chrome for Patchright
+        run: npx patchright install chrome
 
       - name: Run scraper
-        run: npm run scrape
+        run: xvfb-run --auto-servernum -- npm run scrape
 
       - name: Upload debug artifacts on failure
         if: failure()

@@ -2,6 +2,7 @@
 // patched against CDP-level automation leaks) for bot-detection evasion.
 import fs from 'node:fs';
 import { chromium } from 'patchright';
+import { createBrowserOptions } from './browser-options.mjs';
 import { CONFIG } from './config.mjs';
 
 /**
@@ -42,14 +43,10 @@ async function logDiagnostics(page, response) {
 export async function scrapeGoals() {
   console.log('Launching browser...');
 
-  // Patchright's evasions assume the patched browser's real fingerprint and
-  // headers are used unmodified — hand-rolled UA/client-hint overrides are a
-  // known giveaway when they drift from what the actual binary reports, so
-  // none are set here (unlike the previous playwright-extra setup).
-  const context = await chromium.launchPersistentContext('', {
-    headless: true,
-    locale: 'en-US',
-  });
+  // Patchright's evasions require a real, headed Chrome fingerprint. CI runs
+  // this inside Xvfb so Chrome still has a display without exposing a headless
+  // browser fingerprint to the source's WAF.
+  const context = await chromium.launchPersistentContext('', createBrowserOptions());
 
   const page = await context.newPage();
 
